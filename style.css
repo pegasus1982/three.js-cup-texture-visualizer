@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+}
+
+.main {
+  display: flex;
+  height: 100%;
+}
+
+#scene-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#editor-container {
+  flex: 1;
+  overflow: hidden;
+}
