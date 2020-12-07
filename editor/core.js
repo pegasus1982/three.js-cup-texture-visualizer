@@ -10,7 +10,11 @@
    * @param {Array} buttons define toolbar buttons 
    * @param {Array} shapes define shapes
    */
-  var ImageEditor = function (containerSelector, buttons, shapes) {
+  var ImageEditor = function (containerSelector, buttons, shapes, size, eventListeners) {
+    this.width = size ? size.width : 800;
+    this.height = size ? size.height : 600;
+
+    this.eventListeners = eventListeners;
     this.containerSelector = containerSelector;
     this.containerEl = $(containerSelector);
 
@@ -29,6 +33,14 @@
      */
     this.getCanvasJSON = () => {
       return this.canvas.toJSON();
+    }
+
+    this.getCanvasDataURL = () => {
+      try {
+        return this.canvas.toDataURL();
+      } catch (_) {
+        return null;
+      }
     }
 
     /**
@@ -287,8 +299,8 @@
     try {
       $(`${this.containerSelector} .main-panel`).append(`<div class="canvas-holder" id="canvas-holder"><div class="content"><canvas id="c"></canvas></div></div>`);
       const fabricCanvas = new fabric.Canvas('c').setDimensions({
-        width: 800,
-        height: 600
+        width: this.width || 800,
+        height: this.height || 600
       })
 
       fabricCanvas.originalW = fabricCanvas.width;
@@ -320,6 +332,7 @@
         console.log('trigger: modified')
         let currentState = this.canvas.toJSON();
         this.history.push(JSON.stringify(currentState));
+        this.eventListeners && typeof this.eventListeners.onChange === 'function' && this.eventListeners.onChange();
       })
 
       const savedCanvas = saveInBrowser.load('canvasEditor');
@@ -534,7 +547,7 @@
           <label>Width</label>
           <div class="custom-number-input">
           <button class="decrease">-</button>
-          <input type="number" min="100" id="input-width" value="640"/>
+          <input type="number" min="100" id="input-width" value="${this.width || 800}"/>
           <button class="increase">+</button>
           </div>
         </div>
@@ -542,7 +555,7 @@
           <label>Height</label>
           <div class="custom-number-input">
           <button class="decrease">-</button>
-          <input type="number" min="100" id="input-height" value="480"/>
+          <input type="number" min="100" id="input-height" value="${this.height || 600}"/>
           <button class="increase">+</button>
           </div>
         </div>
@@ -616,6 +629,7 @@
           try {
             _self.canvas.backgroundColor = color;
             _self.canvas.renderAll();
+            _self.canvas.trigger('object:modified');
           } catch (_) {
             console.log("can't update background color")
           }
@@ -676,6 +690,7 @@
         let gradient = generateFabricGradientFromColorStops(stops, _self.canvas.width, _self.canvas.height, orientation, angle);
         _self.canvas.setBackgroundColor(gradient)
         _self.canvas.renderAll()
+        _self.canvas.trigger('object:modified');
       }
 
       // Do stuff on change of the gradient

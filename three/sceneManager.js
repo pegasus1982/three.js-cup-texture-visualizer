@@ -20,6 +20,22 @@
     this.slightAlpha = Math.random() * 5;
     this.slightBeta = Math.random() * 3;
 
+    this.updateTexture = (url) => {
+      try {
+        this.object.traverse(function (child) {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+
+            child.material.map = THREE.ImageUtils.loadTexture(url);
+            child.material.needsUpdate = true;
+          }
+        });
+      } catch (_) {
+        console.log("can't update texture")
+      }
+    }
+
     this.init = () => {
       const _self = this;
       this.scene = new THREE.Scene();
@@ -29,12 +45,15 @@
       this.camera.position.set(-200, 50, 250);
       this.camera.lookAt(0, 0, 0);
 
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
-      hemiLight.position.set(0, 200, 0);
+      // var light = new THREE.AmbientLight(0x404040); // soft white light
+      // this.scene.add(light);
+
+      const hemiLight = new THREE.HemisphereLight(0xcccccc, 0x444444);
+      hemiLight.position.set(0, 500, 0);
       this.scene.add(hemiLight);
 
       const dirLight = new THREE.DirectionalLight(0xffffff);
-      dirLight.position.set(0, 200, 100);
+      dirLight.position.set(0, 800, 100);
       dirLight.castShadow = true;
       dirLight.shadow.radius = 8;
       dirLight.shadow.mapSize.width = 2048;
@@ -54,6 +73,10 @@
           if (child.isMesh) {
             child.castShadow = true;
             child.receiveShadow = true;
+
+            child.material = new THREE.MeshPhongMaterial({
+              color: 0xffffff
+            })
           }
         });
         _self.scene.add(object);

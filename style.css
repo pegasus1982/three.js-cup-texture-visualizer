@@ -7,6 +7,14 @@ body {
   height: 100%;
 }
 
+#texture-image {
+  display: none;
+}
+
+#texture-canvas {
+  display: none;
+}
+
 #scene-container {
   display: flex;
   align-items: center;
