@@ -652,6 +652,7 @@
           color && (hex = color.toRgbString()); // #ff0000
           _self.canvas.backgroundColor = hex;
           _self.canvas.renderAll();
+          _self.canvas.trigger('object:modified');
         }
       });
 
