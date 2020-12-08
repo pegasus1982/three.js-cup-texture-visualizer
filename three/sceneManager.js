@@ -106,7 +106,7 @@
       this.renderer.render(this.scene, this.camera);
       try {
         rotation += 0.01;
-        this.object.rotation.y = rotation;
+        // this.object.rotation.y = rotation;
       } catch (_) {
 
       }
