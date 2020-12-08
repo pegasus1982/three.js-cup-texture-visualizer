@@ -19,6 +19,7 @@
     this.mixer;
     this.slightAlpha = Math.random() * 5;
     this.slightBeta = Math.random() * 3;
+    let rotation = 0;
 
     this.updateTexture = (url) => {
       try {
@@ -103,6 +104,12 @@
     this.animate = () => {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
+      try {
+        rotation += 0.01;
+        this.object.rotation.y = rotation;
+      } catch (_) {
+
+      }
     }
 
     this.init();
